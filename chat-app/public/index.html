@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Chatting</h1>
+    <input type="text" id="Message" placeholder="Enter Message">
+    <button id="sendBtn">send!</button>
+    <div id="status">Status: Connected</div>
+    <div id="messages"></div>
+    
+    <!-- we need to install a socket.io on clinet also to make a proper connection of sockets  -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+         const socket = io({
+            reconnection: true,           // Enable automatic reconnection
+            reconnectionAttempts: 5,      // Number of attempts before giving up
+            reconnectionDelay: 1000,      // Delay between attempts (in ms)
+        });
+        const sendBtn = document.getElementById("sendBtn");
+        const MessageInput = document.getElementById("Message");
+        const allmessages = document.getElementById("messages");
+        const statusDiv = document.getElementById("status");
+        socket.on("message",(message)=>{
+            const p = document.createElement("p");
+            p.innerText = message;
+            allmessages.append(p);
+        })
+        socket.on("connect", () => {
+            statusDiv.innerText = "Status: Connected";
+            statusDiv.style.color = "green";
+        });
+
+        socket.on("disconnect", () => {
+            statusDiv.innerText = "Status: Disconnected. Attempting to reconnect...";
+            statusDiv.style.color = "red";
+        });
+        sendBtn.addEventListener('click' , ()=>{
+            const message = MessageInput.value;
+            socket.emit('user-message', message);
+        })
+    </script>
+</body>
+</html>
