@@ -21,7 +21,7 @@ function App() {
   return (
     <>
       <div className="App">
-      <h1>Todos</h1>
+      <h1>GraphQL</h1>
       <table>
         <thead>
           <tr>
